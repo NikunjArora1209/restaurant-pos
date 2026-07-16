@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ticket — Restaurant Order & Sales Tracker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root{
+  --charcoal: #1f2420;
+  --charcoal-2: #262c26;
+  --charcoal-3: #323930;
+  --paper: #faf6ec;
+  --paper-dim: #efe9da;
+  --green: #4a7c59;
+  --green-dim: #3a6147;
+  --brass: #c9a227;
+  --red: #b5482f;
+  --ink: #23261f;
+  --ink-soft: #6b7267;
+  --line: #d8d0ba;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--charcoal);
+  color:var(--paper);
+  font-family:'Inter',sans-serif;
+  min-height:100vh;
+}
+.app{
+  max-width:1400px;
+  margin:0 auto;
+  padding:28px 24px 80px;
+}
+
+/* ---------- HEADER ---------- */
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:24px;
+  flex-wrap:wrap;
+  border-bottom:2px solid var(--charcoal-3);
+  padding-bottom:20px;
+  margin-bottom:24px;
+}
+.brand-row{display:flex; align-items:baseline; gap:14px;}
+.brand-name{
+  font-size:28px;
+  font-weight:800;
+  letter-spacing:-0.02em;
+  background:transparent;
+  border:none;
+  color:var(--paper);
+  font-family:'Inter',sans-serif;
+  padding:0;
+  max-width:420px;
+}
+.brand-name:focus{outline:1px dashed var(--brass);}
+.brand-tag{
+  font-family:'Space Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--brass);
+  border:1px solid var(--brass);
+  padding:3px 8px;
+  border-radius:3px;
+}
+.stats-row{display:flex; gap:28px; flex-wrap:wrap;}
+.stat{text-align:right;}
+.stat .num{
+  font-family:'Space Mono',monospace;
+  font-size:24px;
+  font-weight:700;
+  color:var(--paper);
+  line-height:1;
+}
+.stat .label{
+  font-size:10.5px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  margin-top:6px;
+  color:#8b9188;
+}
+
+/* ---------- LAYOUT ---------- */
+.layout{
+  display:grid;
+  grid-template-columns:1.3fr 1fr;
+  gap:24px;
+}
+@media (max-width:900px){
+  .layout{grid-template-columns:1fr;}
+}
+
+/* ---------- MENU PANEL ---------- */
+.panel{
+  background:var(--charcoal-2);
+  border:1px solid var(--charcoal-3);
+  border-radius:10px;
+  padding:20px;
+}
+.panel-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:16px;
+}
+.panel-title{
+  font-size:13px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:#9aa39a;
+  font-weight:600;
+}
+.link-btn{
+  background:none;
+  border:none;
+  color:var(--brass);
+  font-size:12.5px;
+  cursor:pointer;
+  font-weight:600;
+  padding:4px 0;
+}
+.link-btn:hover{text-decoration:underline;}
+
+.cat-block{margin-bottom:18px;}
+.cat-name{
+  font-size:11px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--green);
+  margin-bottom:8px;
+  font-weight:700;
+}
+.item-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:10px;
+}
+.menu-item{
+  background:var(--charcoal-3);
+  border:1px solid #3d453c;
+  border-radius:8px;
+  padding:12px 12px 10px;
+  cursor:pointer;
+  text-align:left;
+  transition:border-color .12s, transform .12s;
+  color:var(--paper);
+}
+.menu-item:hover{border-color:var(--green); transform:translateY(-1px);}
+.menu-item .mi-name{font-size:14px; font-weight:600; display:block; margin-bottom:6px;}
+.menu-item .mi-price{
+  font-family:'Space Mono',monospace;
+  font-size:13px;
+  color:var(--brass);
+}
+.empty-note{
+  color:#7d857c;
+  font-size:13px;
+  padding:20px 4px;
+}
+
+/* ---------- MANAGE MENU FORM ---------- */
+.manage-form{
+  background:var(--charcoal-3);
+  border-radius:8px;
+  padding:14px;
+  margin-bottom:16px;
+}
+.manage-form .row{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr auto;
+  gap:8px;
+  margin-bottom:8px;
+}
+.manage-form input, .manage-form select{
+  background:var(--charcoal-2);
+  border:1px solid #454d44;
+  color:var(--paper);
+  border-radius:5px;
+  padding:8px 9px;
+  font-size:13px;
+  font-family:'Inter',sans-serif;
+  width:100%;
+}
+.btn{
+  border:none;
+  border-radius:6px;
+  padding:9px 14px;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  font-family:'Inter',sans-serif;
+}
+.btn-green{background:var(--green); color:#fff;}
+.btn-green:hover{background:var(--green-dim);}
+.btn-outline{background:transparent; border:1px solid #4d564b; color:var(--paper);}
+.btn-outline:hover{border-color:var(--brass); color:var(--brass);}
+.existing-items{display:flex; flex-direction:column; gap:6px; max-height:220px; overflow-y:auto;}
+.existing-row{
+  display:flex; align-items:center; justify-content:space-between;
+  font-size:12.5px; padding:6px 8px; background:var(--charcoal-2); border-radius:5px;
+}
+.existing-row .del{color:var(--red); cursor:pointer; font-size:12px; font-weight:700; background:none; border:none;}
+
+/* ---------- TICKET ---------- */
+.ticket-wrap{
+  background:var(--paper);
+  color:var(--ink);
+  border-radius:10px;
+  padding:0;
+  overflow:hidden;
+  position:sticky;
+  top:20px;
+}
+.ticket-inner{padding:24px 24px 8px;}
+.ticket-serial-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  border-bottom:2px dashed var(--line);
+  padding-bottom:14px;
+  margin-bottom:14px;
+}
+.ticket-serial-label{
+  font-size:10px;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--ink-soft);
+  margin-bottom:4px;
+}
+.ticket-serial{
+  font-family:'Space Mono',monospace;
+  font-size:30px;
+  font-weight:700;
+  letter-spacing:0.02em;
+}
+.ticket-time{
+  text-align:right;
+  font-family:'Space Mono',monospace;
+  font-size:11.5px;
+  color:var(--ink-soft);
+}
+.ticket-items{min-height:80px; margin-bottom:10px;}
+.ticket-empty{
+  color:var(--ink-soft);
+  font-size:13px;
+  padding:24px 0;
+  text-align:center;
+}
+.ticket-line{
+  display:grid;
+  grid-template-columns:auto 1fr auto auto;
+  align-items:center;
+  gap:10px;
+  padding:8px 0;
+  border-bottom:1px solid var(--line);
+  font-size:13.5px;
+}
+.qty-ctrl{
+  display:flex; align-items:center; gap:6px;
+  font-family:'Space Mono',monospace;
+}
+.qty-btn{
+  width:20px; height:20px;
+  border-radius:4px;
+  border:1px solid var(--line);
+  background:transparent;
+  cursor:pointer;
+  font-size:12px;
+  line-height:1;
+  color:var(--ink);
+}
+.ticket-line .li-name{font-weight:600;}
+.ticket-line .li-price{font-family:'Space Mono',monospace; text-align:right; min-width:60px;}
+.remove-x{
+  background:none; border:none; color:var(--red); cursor:pointer; font-size:15px; font-weight:700; padding:0 2px;
+}
+
+.ticket-totals{
+  border-top:2px dashed var(--line);
+  padding-top:12px;
+  margin-top:4px;
+}
+.tot-row{
+  display:flex; justify-content:space-between;
+  font-family:'Space Mono',monospace;
+  font-size:13px;
+  padding:3px 0;
+}
+.tot-row.grand{
+  font-size:18px;
+  font-weight:700;
+  padding-top:8px;
+  border-top:1px solid var(--ink);
+  margin-top:6px;
+}
+.tax-row{display:flex; align-items:center; gap:6px; color:var(--ink-soft);}
+.tax-row input{
+  width:46px;
+  font-family:'Space Mono',monospace;
+  font-size:12px;
+  border:1px solid var(--line);
+  border-radius:4px;
+  padding:2px 4px;
+  background:transparent;
+  color:var(--ink);
+}
+
+.ticket-actions{
+  display:flex; gap:8px;
+  padding:16px 24px 20px;
+}
+.btn-complete{
+  flex:1;
+  background:var(--ink);
+  color:var(--paper);
+  padding:13px;
+  border-radius:7px;
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:0.02em;
+}
+.btn-complete:disabled{opacity:0.35; cursor:not-allowed;}
+.btn-complete:hover:not(:disabled){background:#000;}
+.btn-clear{
+  background:transparent;
+  border:1px solid var(--line);
+  color:var(--ink-soft);
+  border-radius:7px;
+  padding:13px 16px;
+  font-size:13px;
+}
+.btn-clear:hover{border-color:var(--red); color:var(--red);}
+
+.perf{
+  height:14px;
+  background:
+    radial-gradient(circle at 10px 0, transparent 7px, var(--paper) 7.5px) 0 -7px / 20px 14px repeat-x,
+    var(--charcoal);
+}
+
+/* ---------- HISTORY ---------- */
+.history-panel{margin-top:24px;}
+.history-controls{display:flex; gap:8px; align-items:center; margin-bottom:14px; flex-wrap:wrap;}
+.filter-btn{
+  background:var(--charcoal-3);
+  border:1px solid #454d44;
+  color:#c4cbc2;
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:12px;
+  cursor:pointer;
+  font-weight:600;
+}
+.filter-btn.active{background:var(--green); border-color:var(--green); color:#fff;}
+.search-box{
+  margin-left:auto;
+  background:var(--charcoal-3);
+  border:1px solid #454d44;
+  border-radius:20px;
+  padding:6px 14px;
+  color:var(--paper);
+  font-size:12.5px;
+  min-width:180px;
+}
+table{width:100%; border-collapse:collapse; font-size:13px;}
+thead th{
+  text-align:left;
+  font-size:10.5px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:#8b9188;
+  padding:8px 10px;
+  border-bottom:1px solid var(--charcoal-3);
+}
+tbody td{
+  padding:10px 10px;
+  border-bottom:1px solid var(--charcoal-3);
+  vertical-align:top;
+}
+tbody tr:hover{background:rgba(255,255,255,0.02);}
+.serial-cell{font-family:'Space Mono',monospace; font-weight:700; color:var(--brass); white-space:nowrap;}
+.time-cell{color:#9aa39a; font-family:'Space Mono',monospace; font-size:12px; white-space:nowrap;}
+.items-cell{color:#c4cbc2; max-width:340px;}
+.total-cell{font-family:'Space Mono',monospace; font-weight:700; text-align:right; white-space:nowrap;}
+.status-pill{
+  display:inline-block;
+  font-size:10.5px;
+  font-weight:700;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  padding:3px 8px;
+  border-radius:12px;
+}
+.status-pill.completed{background:rgba(74,124,89,0.25); color:#8fd4a3;}
+.status-pill.void{background:rgba(181,72,47,0.25); color:#e3897a;}
+.void-btn{
+  background:none; border:none; color:#7d857c; font-size:11.5px; cursor:pointer; text-decoration:underline;
+}
+.void-btn:hover{color:var(--red);}
+.no-orders{color:#7d857c; padding:24px 4px; text-align:center; font-size:13px;}
+
+.toast{
+  position:fixed;
+  bottom:24px; left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:var(--green);
+  color:#fff;
+  padding:12px 22px;
+  border-radius:8px;
+  font-size:13.5px;
+  font-weight:600;
+  box-shadow:0 8px 24px rgba(0,0,0,0.35);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s, transform .2s;
+  z-index:50;
+}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+.loading-note{color:#7d857c; font-size:13px; padding:20px;}
+
+/* ---------- PRINT ---------- */
+#printArea{display:none;}
+.print-ticket{
+  width:280px;
+  font-family:'Space Mono',monospace;
+  color:#000;
+  font-size:12px;
+  line-height:1.5;
+}
+.print-row{display:flex; justify-content:space-between; gap:10px;}
+.print-hr{border-top:1px dashed #000; margin:6px 0;}
+.print-center{text-align:center;}
+.print-bold{font-weight:700;}
+.print-small{font-size:10px;}
+.print-lg{font-size:15px;}
+
+@media print{
+  body > *:not(#printArea){display:none !important;}
+  #printArea{display:block !important; position:absolute; top:0; left:0; padding:16px;}
+}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <div class="loading-note" id="loadingNote">Loading ticket data…</div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div id="printArea"></div>
+
+<script>
+(function(){
+
+const STORAGE_KEYS = {
+  menu: 'menu-items',
+  orders: 'orders-list',
+  settings: 'settings'
+};
+
+let state = {
+  menu: [],       // [{id,name,price,category}]
+  orders: [],     // [{serial, time, items:[{id,name,price,qty}], subtotal, tax, taxRate, total, status}]
+  settings: { name: 'My Cafe', taxRate: 5, autoPrint: false, nextSerial: 1 },
+  cart: [],       // [{id,name,price,qty}]
+  managingMenu: false,
+  historyFilter: 'today',
+  searchTerm: ''
+};
+
+const DEFAULT_MENU = [
+  {id:'i1', name:'Masala Chai', price:20, category:'Beverages'},
+  {id:'i2', name:'Filter Coffee', price:25, category:'Beverages'},
+  {id:'i3', name:'Cold Coffee', price:70, category:'Beverages'},
+  {id:'i4', name:'Fresh Lime Soda', price:40, category:'Beverages'},
+  {id:'i5', name:'Samosa (2 pcs)', price:30, category:'Snacks'},
+  {id:'i6', name:'Vada Pav', price:35, category:'Snacks'},
+  {id:'i7', name:'Maggi Noodles', price:50, category:'Snacks'},
+  {id:'i8', name:'Veg Sandwich', price:60, category:'Sandwiches & Rolls'},
+  {id:'i9', name:'Grilled Cheese Sandwich', price:80, category:'Sandwiches & Rolls'},
+  {id:'i10', name:'Paneer Tikka Roll', price:110, category:'Sandwiches & Rolls'},
+  {id:'i11', name:'Chocolate Brownie', price:90, category:'Desserts'},
+  {id:'i12', name:'Water Bottle', price:20, category:'Beverages'}
+];
+
+function uid(){ return 'i' + Math.random().toString(36).slice(2,9); }
+function money(n){
+  n = Math.round((n||0)*100)/100;
+  return '₹' + n.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+function pad(n, len){ return String(n).padStart(len,'0'); }
+function serialStr(n){ return 'ORD-' + pad(n,5); }
+
+async function loadAll(){
+  try{
+    const menuRes = await window.storage.get(STORAGE_KEYS.menu).catch(()=>null);
+    state.menu = menuRes ? JSON.parse(menuRes.value) : DEFAULT_MENU.slice();
+  }catch(e){ state.menu = DEFAULT_MENU.slice(); }
+
+  try{
+    const ordersRes = await window.storage.get(STORAGE_KEYS.orders).catch(()=>null);
+    state.orders = ordersRes ? JSON.parse(ordersRes.value) : [];
+  }catch(e){ state.orders = []; }
+
+  try{
+    const settingsRes = await window.storage.get(STORAGE_KEYS.settings).catch(()=>null);
+    state.settings = settingsRes ? JSON.parse(settingsRes.value) : state.settings;
+  }catch(e){ /* keep defaults */ }
+
+  // if menu never saved, persist defaults so it's stable going forward
+  if(!(await keyExists(STORAGE_KEYS.menu))){
+    await saveMenu();
+  }
+  if(!(await keyExists(STORAGE_KEYS.settings))){
+    await saveSettings();
+  }
+
+  render();
+}
+
+async function keyExists(key){
+  try{
+    const r = await window.storage.get(key);
+    return !!r;
+  }catch(e){ return false; }
+}
+
+async function saveMenu(){
+  try{ await window.storage.set(STORAGE_KEYS.menu, JSON.stringify(state.menu)); }
+  catch(e){ console.error('save menu failed', e); }
+}
+async function saveOrders(){
+  try{ await window.storage.set(STORAGE_KEYS.orders, JSON.stringify(state.orders)); }
+  catch(e){ console.error('save orders failed', e); }
+}
+async function saveSettings(){
+  try{ await window.storage.set(STORAGE_KEYS.settings, JSON.stringify(state.settings)); }
+  catch(e){ console.error('save settings failed', e); }
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+/* ---------- derived stats ---------- */
+function isToday(iso){
+  const d = new Date(iso);
+  const now = new Date();
+  return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth() && d.getDate()===now.getDate();
+}
+
+function computeStats(){
+  const completed = state.orders.filter(o=>o.status==='completed');
+  const todayOrders = completed.filter(o=>isToday(o.time));
+  const todaySales = todayOrders.reduce((s,o)=>s+o.total,0);
+  const allSales = completed.reduce((s,o)=>s+o.total,0);
+  const avg = todayOrders.length ? todaySales/todayOrders.length : 0;
+  return {
+    todaySales, todayCount: todayOrders.length, avg,
+    allSales, allCount: completed.length
+  };
+}
+
+/* ---------- cart ops ---------- */
+function addToCart(item){
+  const existing = state.cart.find(c=>c.id===item.id);
+  if(existing){ existing.qty += 1; }
+  else{ state.cart.push({id:item.id, name:item.name, price:item.price, qty:1}); }
+  render();
+}
+function changeQty(id, delta){
+  const line = state.cart.find(c=>c.id===id);
+  if(!line) return;
+  line.qty += delta;
+  if(line.qty<=0){ state.cart = state.cart.filter(c=>c.id!==id); }
+  render();
+}
+function removeLine(id){
+  state.cart = state.cart.filter(c=>c.id!==id);
+  render();
+}
+function clearCart(){
+  state.cart = [];
+  render();
+}
+
+async function completeOrder(){
+  if(state.cart.length===0) return;
+  const subtotal = state.cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const taxRate = Number(state.settings.taxRate)||0;
+  const tax = subtotal * (taxRate/100);
+  const total = subtotal + tax;
+  const serialNum = state.settings.nextSerial;
+  const order = {
+    serial: serialStr(serialNum),
+    serialNum: serialNum,
+    time: new Date().toISOString(),
+    items: state.cart.map(c=>({id:c.id,name:c.name,price:c.price,qty:c.qty})),
+    subtotal, tax, taxRate, total,
+    status: 'completed'
+  };
+  state.orders.unshift(order);
+  state.settings.nextSerial = serialNum + 1;
+  const cartSnapshot = state.cart.slice();
+  state.cart = [];
+  await saveOrders();
+  await saveSettings();
+  showToast('Order ' + order.serial + ' completed — ' + money(total));
+  if(state.settings.autoPrint){
+    printKOT(cartSnapshot, order.serial, new Date(order.time));
+  }
+  render();
+}
+
+async function voidOrder(serialNum){
+  const o = state.orders.find(o=>o.serialNum===serialNum);
+  if(!o) return;
+  o.status = o.status==='void' ? 'completed' : 'void';
+  await saveOrders();
+  showToast(o.status==='void' ? ('Order ' + o.serial + ' voided') : ('Order ' + o.serial + ' restored'));
+  render();
+}
+
+/* ---------- printing ---------- */
+function doPrint(html){
+  const area = document.getElementById('printArea');
+  area.innerHTML = html;
+  window.print();
+}
+
+function printKOT(items, serial, time){
+  if(!items || items.length===0) return;
+  const html = `
+    <div class="print-ticket">
+      <div class="print-center print-bold print-lg">${escapeHtml(state.settings.name)}</div>
+      <div class="print-center print-small">KITCHEN ORDER TICKET (KOT)</div>
+      <div class="print-hr"></div>
+      <div class="print-row"><span>Order No.</span><span class="print-bold">${serial}</span></div>
+      <div class="print-row"><span>${time.toLocaleDateString('en-IN')}</span><span>${time.toLocaleTimeString('en-IN')}</span></div>
+      <div class="print-hr"></div>
+      ${items.map(it=>`<div class="print-row"><span>${it.qty} × ${escapeHtml(it.name)}</span></div>`).join('')}
+      <div class="print-hr"></div>
+      <div class="print-center print-small">No prices — kitchen copy only</div>
+    </div>
+  `;
+  doPrint(html);
+}
+
+function printBill(order){
+  const time = new Date(order.time);
+  const rate = order.taxRate!==undefined ? order.taxRate : (state.settings.taxRate||0);
+  const html = `
+    <div class="print-ticket">
+      <div class="print-center print-bold print-lg">${escapeHtml(state.settings.name)}</div>
+      <div class="print-center print-small">TAX INVOICE</div>
+      <div class="print-hr"></div>
+      <div class="print-row"><span>Order No.</span><span class="print-bold">${order.serial}</span></div>
+      <div class="print-row"><span>${time.toLocaleDateString('en-IN')}</span><span>${time.toLocaleTimeString('en-IN')}</span></div>
+      <div class="print-hr"></div>
+      ${order.items.map(it=>`
+        <div class="print-row"><span>${it.qty} × ${escapeHtml(it.name)}</span><span>${money(it.price*it.qty)}</span></div>
+      `).join('')}
+      <div class="print-hr"></div>
+      <div class="print-row"><span>Subtotal</span><span>${money(order.subtotal)}</span></div>
+      <div class="print-row"><span>GST (${rate}%)</span><span>${money(order.tax)}</span></div>
+      <div class="print-row print-bold print-lg"><span>Total</span><span>${money(order.total)}</span></div>
+      <div class="print-hr"></div>
+      <div class="print-center print-small">Thank you — visit again!</div>
+    </div>
+  `;
+  doPrint(html);
+}
+
+/* ---------- menu management ---------- */
+async function addMenuItem(name, price, category){
+  if(!name.trim() || isNaN(price)) return;
+  state.menu.push({id:uid(), name:name.trim(), price:Number(price), category: category.trim()||'Other'});
+  await saveMenu();
+  render();
+}
+async function deleteMenuItem(id){
+  state.menu = state.menu.filter(m=>m.id!==id);
+  await saveMenu();
+  render();
+}
+
+/* ---------- render ---------- */
+function groupByCategory(menu){
+  const map = {};
+  menu.forEach(m=>{
+    if(!map[m.category]) map[m.category]=[];
+    map[m.category].push(m);
+  });
+  return map;
+}
+
+function filteredOrders(){
+  let list = state.orders.slice();
+  if(state.historyFilter==='today') list = list.filter(o=>isToday(o.time));
+  if(state.searchTerm.trim()){
+    const q = state.searchTerm.trim().toLowerCase();
+    list = list.filter(o=>
+      o.serial.toLowerCase().includes(q) ||
+      o.items.some(it=>it.name.toLowerCase().includes(q))
+    );
+  }
+  return list;
+}
+
+function fmtTime(iso){
+  const d = new Date(iso);
+  return d.toLocaleDateString(undefined,{month:'short',day:'numeric'}) + ' · ' +
+         d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
+}
+
+function render(){
+  const stats = computeStats();
+  const grouped = groupByCategory(state.menu);
+  const cartSubtotal = state.cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const taxRate = Number(state.settings.taxRate)||0;
+  const cartTax = cartSubtotal*(taxRate/100);
+  const cartTotal = cartSubtotal + cartTax;
+  const orders = filteredOrders();
+
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <header>
+      <div>
+        <div class="brand-row">
+          <input class="brand-name" id="brandInput" value="${escapeAttr(state.settings.name)}" />
+          <span class="brand-tag">Order Tracker</span>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="num">${money(stats.todaySales)}</div>
+          <div class="label">Today's Sales</div>
+        </div>
+        <div class="stat">
+          <div class="num">${stats.todayCount}</div>
+          <div class="label">Orders Today</div>
+        </div>
+        <div class="stat">
+          <div class="num">${money(stats.avg)}</div>
+          <div class="label">Avg Ticket</div>
+        </div>
+        <div class="stat">
+          <div class="num">${money(stats.allSales)}</div>
+          <div class="label">All-Time Sales</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">Menu</div>
+          <button class="link-btn" id="toggleManage">${state.managingMenu ? 'Done editing' : 'Manage menu'}</button>
+        </div>
+
+        ${state.managingMenu ? renderManageMenu() : renderMenuGrid(grouped)}
+      </div>
+
+      <div class="ticket-wrap">
+        <div class="ticket-inner">
+          <div class="ticket-serial-row">
+            <div>
+              <div class="ticket-serial-label">Order No.</div>
+              <div class="ticket-serial">${serialStr(state.settings.nextSerial)}</div>
+            </div>
+            <div class="ticket-time">${new Date().toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}<br>${new Date().toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})}</div>
+          </div>
+
+          <div class="ticket-items">
+            ${state.cart.length===0 ? '<div class="ticket-empty">No items yet — tap a menu item to add it to this order.</div>' :
+              state.cart.map(c=>`
+                <div class="ticket-line">
+                  <div class="qty-ctrl">
+                    <button class="qty-btn" data-action="dec" data-id="${c.id}">−</button>
+                    <span>${c.qty}</span>
+                    <button class="qty-btn" data-action="inc" data-id="${c.id}">+</button>
+                  </div>
+                  <div class="li-name">${escapeHtml(c.name)}</div>
+                  <div class="li-price">${money(c.price*c.qty)}</div>
+                  <button class="remove-x" data-action="remove" data-id="${c.id}" title="Remove">×</button>
+                </div>
+              `).join('')
+            }
+          </div>
+
+          <div class="ticket-totals">
+            <div class="tot-row"><span>Subtotal</span><span>${money(cartSubtotal)}</span></div>
+            <div class="tot-row tax-row">
+              <span>GST</span>
+              <span style="margin-left:auto; display:flex; align-items:center; gap:5px;">
+                <input id="taxRateInput" type="number" min="0" step="0.1" value="${state.settings.taxRate}" />%
+              </span>
+              <span>${money(cartTax)}</span>
+            </div>
+            <div class="tot-row" style="font-family:'Inter',sans-serif; font-size:12px; color:var(--ink-soft);">
+              <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                <input type="checkbox" id="autoPrintToggle" ${state.settings.autoPrint?'checked':''} />
+                Auto-print KOT when order is completed
+              </label>
+            </div>
+            <div class="tot-row grand"><span>Total</span><span>${money(cartTotal)}</span></div>
+          </div>
+        </div>
+
+        <div class="perf"></div>
+
+        <div class="ticket-actions">
+          <button class="btn-clear" id="clearCartBtn" ${state.cart.length===0?'disabled':''}>Clear</button>
+          <button class="btn-outline" id="printKotBtn" ${state.cart.length===0?'disabled':''} style="${state.cart.length===0?'opacity:0.35;cursor:not-allowed;':''}">Print KOT</button>
+          <button class="btn-complete" id="completeBtn" ${state.cart.length===0?'disabled':''}>Complete Order — ${money(cartTotal)}</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel history-panel">
+      <div class="panel-head">
+        <div class="panel-title">Order History</div>
+      </div>
+      <div class="history-controls">
+        <button class="filter-btn ${state.historyFilter==='today'?'active':''}" data-filter="today">Today</button>
+        <button class="filter-btn ${state.historyFilter==='all'?'active':''}" data-filter="all">All Time</button>
+        <input class="search-box" id="searchBox" placeholder="Search by order # or item…" value="${escapeAttr(state.searchTerm)}" />
+      </div>
+      ${orders.length===0 ? '<div class="no-orders">No orders yet in this view.</div>' : `
+        <table>
+          <thead>
+            <tr><th>Serial</th><th>Time</th><th>Items</th><th>Status</th><th style="text-align:right">Total</th><th></th><th></th></tr>
+          </thead>
+          <tbody>
+            ${orders.map(o=>`
+              <tr>
+                <td class="serial-cell">${o.serial}</td>
+                <td class="time-cell">${fmtTime(o.time)}</td>
+                <td class="items-cell">${o.items.map(it=>it.qty+'× '+escapeHtml(it.name)).join(', ')}</td>
+                <td><span class="status-pill ${o.status}">${o.status}</span></td>
+                <td class="total-cell">${money(o.total)}</td>
+                <td><button class="void-btn" data-print="${o.serialNum}">Print Bill</button></td>
+                <td><button class="void-btn" data-serial="${o.serialNum}">${o.status==='void'?'Restore':'Void'}</button></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `}
+    </div>
+  `;
+
+  attachHandlers();
+}
+
+function renderMenuGrid(grouped){
+  const cats = Object.keys(grouped);
+  if(cats.length===0) return '<div class="empty-note">No menu items yet. Click "Manage menu" to add your first item.</div>';
+  return cats.map(cat=>`
+    <div class="cat-block">
+      <div class="cat-name">${escapeHtml(cat)}</div>
+      <div class="item-grid">
+        ${grouped[cat].map(m=>`
+          <button class="menu-item" data-additem="${m.id}">
+            <span class="mi-name">${escapeHtml(m.name)}</span>
+            <span class="mi-price">${money(m.price)}</span>
+          </button>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderManageMenu(){
+  return `
+    <div class="manage-form">
+      <div class="row">
+        <input id="newItemName" placeholder="Item name" />
+        <input id="newItemPrice" placeholder="Price" type="number" min="0" step="0.01" />
+        <input id="newItemCat" placeholder="Category" />
+        <button class="btn btn-green" id="addItemBtn">Add</button>
+      </div>
+    </div>
+    <div class="existing-items">
+      ${state.menu.length===0 ? '<div class="empty-note">No items yet.</div>' :
+        state.menu.map(m=>`
+          <div class="existing-row">
+            <span>${escapeHtml(m.name)} — ${money(m.price)} <span style="color:#7d857c">(${escapeHtml(m.category)})</span></span>
+            <button class="del" data-delid="${m.id}">Remove</button>
+          </div>
+        `).join('')
+      }
+    </div>
+  `;
+}
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+function escapeAttr(str){ return escapeHtml(str); }
+
+function attachHandlers(){
+  const brandInput = document.getElementById('brandInput');
+  if(brandInput){
+    brandInput.addEventListener('change', async (e)=>{
+      state.settings.name = e.target.value || 'My Restaurant';
+      await saveSettings();
+    });
+  }
+
+  const toggleManage = document.getElementById('toggleManage');
+  if(toggleManage){
+    toggleManage.addEventListener('click', ()=>{
+      state.managingMenu = !state.managingMenu;
+      render();
+    });
+  }
+
+  document.querySelectorAll('[data-additem]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const item = state.menu.find(m=>m.id===btn.dataset.additem);
+      if(item) addToCart(item);
+    });
+  });
+
+  document.querySelectorAll('.qty-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const delta = btn.dataset.action==='inc' ? 1 : -1;
+      changeQty(btn.dataset.id, delta);
+    });
+  });
+  document.querySelectorAll('[data-action="remove"]').forEach(btn=>{
+    btn.addEventListener('click', ()=>removeLine(btn.dataset.id));
+  });
+
+  const clearBtn = document.getElementById('clearCartBtn');
+  if(clearBtn) clearBtn.addEventListener('click', clearCart);
+
+  const printKotBtn = document.getElementById('printKotBtn');
+  if(printKotBtn){
+    printKotBtn.addEventListener('click', ()=>{
+      if(state.cart.length===0) return;
+      printKOT(state.cart, serialStr(state.settings.nextSerial), new Date());
+    });
+  }
+
+  const completeBtn = document.getElementById('completeBtn');
+  if(completeBtn) completeBtn.addEventListener('click', completeOrder);
+
+  const autoPrintToggle = document.getElementById('autoPrintToggle');
+  if(autoPrintToggle){
+    autoPrintToggle.addEventListener('change', async (e)=>{
+      state.settings.autoPrint = e.target.checked;
+      await saveSettings();
+    });
+  }
+
+  const taxInput = document.getElementById('taxRateInput');
+  if(taxInput){
+    taxInput.addEventListener('change', async (e)=>{
+      state.settings.taxRate = Number(e.target.value)||0;
+      await saveSettings();
+      render();
+    });
+  }
+
+  const addItemBtn = document.getElementById('addItemBtn');
+  if(addItemBtn){
+    addItemBtn.addEventListener('click', ()=>{
+      const name = document.getElementById('newItemName').value;
+      const price = parseFloat(document.getElementById('newItemPrice').value);
+      const cat = document.getElementById('newItemCat').value;
+      addMenuItem(name, price, cat);
+    });
+  }
+  document.querySelectorAll('[data-delid]').forEach(btn=>{
+    btn.addEventListener('click', ()=>deleteMenuItem(btn.dataset.delid));
+  });
+
+  document.querySelectorAll('.filter-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      state.historyFilter = btn.dataset.filter;
+      render();
+    });
+  });
+  const searchBox = document.getElementById('searchBox');
+  if(searchBox){
+    searchBox.addEventListener('input', (e)=>{
+      state.searchTerm = e.target.value;
+      render();
+    });
+    // keep focus after re-render
+    searchBox.focus();
+    searchBox.selectionStart = searchBox.selectionEnd = searchBox.value.length;
+  }
+
+  document.querySelectorAll('[data-serial]').forEach(btn=>{
+    btn.addEventListener('click', ()=>voidOrder(Number(btn.dataset.serial)));
+  });
+  document.querySelectorAll('[data-print]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const o = state.orders.find(o=>o.serialNum===Number(btn.dataset.print));
+      if(o) printBill(o);
+    });
+  });
+}
+
+loadAll();
+
+})();
+</script>
+</body>
+</html>
